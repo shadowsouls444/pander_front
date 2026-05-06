@@ -10,3 +10,9 @@
 - JavaScript + React Compiler
 
 **Importante**: Siempre elige una opción con React Compiler (SWC), ya que tiene un mejor rendimiento y es el estandar moderno
+
+## PAQUETES O MODULOS NECESARIOS (YA ESTAN INSTALADOS)
+- react-router-dom
+
+## COMO INSTALAR UN PAQUETE
+- `npm install nombrePaquete`
