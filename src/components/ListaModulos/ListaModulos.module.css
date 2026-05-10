@@ -1,0 +1,125 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;   
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form {
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end; 
+  gap: 10px;
+  width: 96%; 
+}
+
+.form input {
+  width: 250px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background: #272346;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form button:hover {
+  background: #4e34b6;
+}
+
+.crudTable {
+  width: 100%;              
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.crudTable th, .crudTable td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.crudTable th {
+  background: #4e34b6;
+  color: #fff;
+}
+
+.btn-edit, .btn-delete {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-edit {
+  background: #272346;
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background: #1e7e34;
+  transform: scale(1.05);
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background: #a71d2a;
+  transform: scale(1.05);
+}
+
+.acciones {
+  text-align: center;
+  position: relative;
+}
+
+.acciones::before {
+  content: "Editar";
+  display: inline-block;
+  background: #272346;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.acciones::after {
+  content: "Eliminar";
+  display: inline-block;
+  background: #dc3545;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}

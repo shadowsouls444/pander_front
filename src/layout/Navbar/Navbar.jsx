@@ -6,10 +6,10 @@ function Navbar() {
         <nav>
             <ul className={`${styles.container} ${styles.text}`}>
                 <li>
-                    <Link to="/crear-usuario">Opcion 1</Link>
+                    <Link to="/gestion-usuarios"> Gestion Usuarios</Link>
                 </li>
                 <li>
-                    <Link to="/ver-usuarios">Opcion 2</Link>
+                    <Link to="/gestion-modulos"> Gestion Módulos</Link>
                 </li>
             </ul>
         </nav>
