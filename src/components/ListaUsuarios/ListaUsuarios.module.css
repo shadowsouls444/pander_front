@@ -18,6 +18,7 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* FORMULARIO */
 .form {
   background: #fff;
   padding: 15px 20px;
@@ -51,13 +52,19 @@ h1 {
   background: #4e34b6;
 }
 
-.crudTable {
-  width: 100%;              
-  border-collapse: collapse;
+
+.tableContainer {
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow-x: auto;   
+  -webkit-overflow-scrolling: touch; 
+}
+
+.crudTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; 
 }
 
 .crudTable th, .crudTable td {
@@ -100,26 +107,22 @@ h1 {
   transform: scale(1.05);
 }
 
-.acciones {
-  text-align: center;
-  position: relative;
-}
-
-.acciones::before {
-  content: "Editar";
-  display: inline-block;
-  background: #272346;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-right: 6px;
-}
-
-.acciones::after {
-  content: "Eliminar";
-  display: inline-block;
-  background: #dc3545;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .form {
+    flex-direction: column; 
+    align-items: stretch;
+  }
+  .form input, .form button {
+    width: 100%; 
+  }
+  .crudTable th, .crudTable td {
+    font-size: 12px;
+    padding: 6px;
+  }
+  .btn-edit, .btn-delete {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
 }

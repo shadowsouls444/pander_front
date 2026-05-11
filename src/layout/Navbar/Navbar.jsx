@@ -11,6 +11,18 @@ function Navbar() {
                 <li>
                     <Link to="/gestion-modulos"> Gestion Módulos</Link>
                 </li>
+                <li>
+                    <Link to="/gestion-vacantes"> Gestion Vacantes</Link>
+                </li>
+                <li>
+                    <Link to="/gestor-datos-candidato"> Gestor Datos Candidato</Link>
+                </li>
+                <li>
+                    <Link to="/gestion-compañia"> Gestion Compañia</Link>
+                </li>
+                <li>
+                    <Link to="/gestion-analistas"> Gestion Analistas</Link>
+                </li>
             </ul>
         </nav>
     )

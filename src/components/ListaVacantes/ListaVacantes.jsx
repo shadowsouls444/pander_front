@@ -1,12 +1,12 @@
-import styles from './ListaModulos.module.css';
+import styles from './ListaVacantes.module.css';
 
-function ListaModulos() {
+function ListaVacantes() {
   return (
     <div className={styles.container}>
-      <h1>CRUD de Módulos</h1>
+      <h1>CRUD de Vacantes</h1>
 
         <div className={styles.form}>
-              <input type="text" placeholder="Buscar módulo..." />
+              <input type="text" placeholder="Buscar vacante..." />
               <button>Buscar</button>
               <button>Crear Nuevo</button>
           </div>
@@ -17,11 +17,16 @@ function ListaModulos() {
         <table className={styles.crudTable}>
           <thead>
             <tr>
-              <th>Módulo</th>
-                <th>Módulo Principal</th>
+               <th>Compañía</th>
+                <th>Vacante</th>
                 <th>Descripción</th>
-                <th>Comentario</th>
-                <th>Aplicación</th>
+                <th>Unidad</th>
+                <th>Experiencia</th>
+                <th>Rango Salarial</th>
+                <th>Estado</th>
+                <th>Tipo Contrato</th>
+                <th>Activa</th>
+                <th>Publicada</th>
                 <th>Acciones</th>
             </tr>
           </thead>
@@ -55,4 +60,4 @@ function ListaModulos() {
   );
 }
 
-export default ListaModulos;
+export default ListaVacantes;
