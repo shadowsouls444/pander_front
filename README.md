@@ -13,6 +13,7 @@
 
 ## PAQUETES O MODULOS NECESARIOS (YA ESTAN INSTALADOS)
 - react-router-dom
+- axios
 
 ## COMO INSTALAR UN PAQUETE
 - `npm install nombrePaquete`
