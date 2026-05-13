@@ -1,0 +1,121 @@
+/* Login.module.css */
+.page {
+  min-height: 100vh;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blobs decorativos */
+.bgBlob1 {
+  position: absolute; top: -120px; right: -120px;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: rgba(170, 59, 255, 0.25);
+  filter: blur(60px); pointer-events: none;
+}
+.bgBlob2 {
+  position: absolute; bottom: -80px; left: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  filter: blur(50px); pointer-events: none;
+}
+
+.wrapper { width: 100%; max-width: 860px; position: relative; z-index: 1; }
+
+/* Header */
+.header { text-align: center; margin-bottom: 28px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.logoIcon { font-size: 2rem; }
+.logoText { font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: -1px; }
+.tagline { color: rgba(255,255,255,.75); font-size: .9rem; }
+
+/* Card */
+.card {
+  display: flex;
+  background: var(--surface);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.28);
+}
+
+/* Lado izquierdo — formulario */
+.cardLeft {
+  flex: 1;
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+}
+.cardTitle { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.cardSubtitle { font-size: .85rem; color: var(--text-muted); margin-bottom: 28px; }
+
+/* Error */
+.errorBanner {
+  background: var(--danger-bg); color: var(--danger);
+  border: 1px solid rgba(239,68,68,.3); border-radius: var(--radius-sm);
+  padding: 10px 14px; font-size: .85rem; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* Form */
+.form { display: flex; flex-direction: column; gap: 18px; margin-bottom: 20px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: .82rem; font-weight: 600; color: var(--text-h); }
+.inputWrap { position: relative; }
+.inputIcon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1rem; pointer-events: none; }
+.input {
+  width: 100%; padding: 13px 16px 13px 42px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--input-bg); font-family: var(--font);
+  font-size: .93rem; color: var(--text-h); outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-bg); }
+
+/* Submit */
+.submitBtn {
+  width: 100%; padding: 14px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: var(--radius-full);
+  font-family: var(--font); font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background .2s, transform .2s, box-shadow .2s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 4px;
+}
+.submitBtn:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow); }
+.submitBtn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+.btnSpinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+  animation: spin .65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hint { font-size: .78rem; color: var(--text-muted); text-align: center; margin-top: auto; padding-top: 16px; }
+
+/* Lado derecho — ilustración */
+.cardRight {
+  flex-basis: 42%; background: var(--panel-bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 36px;
+}
+.illustration { text-align: center; }
+.illuIcon { font-size: 4rem; margin-bottom: 16px; }
+.illuTitle { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+.illuText { font-size: .85rem; color: var(--text); line-height: 1.6; margin-bottom: 24px; }
+.features { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.featureItem { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: var(--text); }
+.featureCheck { color: var(--primary); font-weight: 700; font-size: 1rem; }
+
+/* Footer */
+.footer { text-align: center; color: rgba(255,255,255,.5); font-size: .78rem; margin-top: 20px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .card { flex-direction: column; }
+  .cardRight { display: none; }
+  .cardLeft { padding: 36px 28px; }
+}

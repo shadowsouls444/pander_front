@@ -1,45 +1,42 @@
-import { createBrowserRouter } from "react-router-dom"
-import MainLayout from "../layout/MainLayout"
-import GestionUsuarios from "../pages/GestionUsuarios"
-import GestionModulos from "../pages/GestionModulos";
-import GestionVacantes from "../pages/GestionVacantes";
-import GestionDatosCandidato from "../pages/GestionDatosCandidato";
-import GestionCompañia from "../pages/GestionCompañia";
-import GestionAnalistas from "../pages/GestionAnalistas";
+// src/routes/routers.jsx
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+import MainLayout from '../layout/MainLayout'
+import Login from '../pages/Login/Login'
+import Dashboard from '../pages/Dashboard/Dashboard'
+import GestionCompania from '../pages/GestionCompania/GestionCompania'
+import GestionAnalistas from '../pages/GestionAnalistas/GestionAnalistas'
+import GestionUsuarios from '../pages/GestionUsuarios/GestionUsuarios'
+import GestionModulos from '../pages/GestionModulos/GestionModulos'
+import GestionVacantes from '../pages/GestionVacantes/GestionVacantes'
+import GestionCandidatos from '../pages/GestionCandidatos/GestionCandidatos'
+import GestionPostulaciones from '../pages/GestionPostulaciones/GestionPostulaciones'
+import Evaluacion from '../pages/Evaluacion/Evaluacion'
 
 export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <MainLayout />,
-        children: [
-            {
-                index: true, // Ruta por defecto
-                element: <h4>Home</h4>
-            },
-            {
-                path: 'gestion-usuarios',
-                element: <GestionUsuarios />
-            },
-            {
-                path: 'gestion-modulos',
-                element: <GestionModulos />
-            },
-            {
-                path: 'gestion-vacantes',
-                element: <GestionVacantes />
-            },
-            {
-                path: 'gestor-datos-candidato',
-                element: <GestionDatosCandidato />
-            },
-            {
-                path: 'gestion-compañia',
-                element: <GestionCompañia />
-            },
-            {
-                path: 'gestion-analistas',
-                element: <GestionAnalistas />
-            }
-        ]
-    }
+  // ── Ruta pública: Login ──────────────────────
+  {
+    path: '/login',
+    element: <Login />,
+  },
+
+  // ── Rutas protegidas: requieren sesión ────────
+  // La protección real ocurre en MainLayout (useEffect → redirect si !user)
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { index: true,                          element: <Dashboard /> },
+      { path: 'gestion-compania',             element: <GestionCompania /> },
+      { path: 'gestion-analistas',            element: <GestionAnalistas /> },
+      { path: 'gestion-usuarios',             element: <GestionUsuarios /> },
+      { path: 'gestion-modulos',              element: <GestionModulos /> },
+      { path: 'gestion-vacantes',             element: <GestionVacantes /> },
+      { path: 'gestion-candidatos',           element: <GestionCandidatos /> },
+      { path: 'gestion-postulaciones',        element: <GestionPostulaciones /> },
+      { path: 'evaluacion',                   element: <Evaluacion /> },
+    ],
+  },
+
+  // ── Catch-all ─────────────────────────────────
+  { path: '*', element: <Navigate to="/" replace /> },
 ])
