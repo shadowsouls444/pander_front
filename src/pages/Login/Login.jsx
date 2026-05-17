@@ -1,6 +1,6 @@
-// src/pages/Login/Login.jsx
+// src/pages/Login/Login.jsx — con enlace a olvido de contraseña
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import styles from './Login.module.css'
 
@@ -30,12 +30,10 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      {/* Fondo decorativo */}
       <div className={styles.bgBlob1} />
       <div className={styles.bgBlob2} />
 
       <div className={styles.wrapper}>
-        {/* Header */}
         <div className={styles.header}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>🎯</span>
@@ -44,7 +42,6 @@ export default function Login() {
           <p className={styles.tagline}>Sistema de Gestión de Talento Humano</p>
         </div>
 
-        {/* Card de login */}
         <div className={styles.card}>
           <div className={styles.cardLeft}>
             <h2 className={styles.cardTitle}>Inicio de Sesión</h2>
@@ -62,15 +59,10 @@ export default function Login() {
                 <div className={styles.inputWrap}>
                   <span className={styles.inputIcon}>👤</span>
                   <input
-                    id="login"
-                    name="login"
-                    type="text"
-                    className={styles.input}
-                    placeholder="Ej: admin"
-                    value={form.login}
-                    onChange={handleChange}
-                    autoFocus
-                    autoComplete="username"
+                    id="login" name="login" type="text"
+                    className={styles.input} placeholder="Ej: admin"
+                    value={form.login} onChange={handleChange}
+                    autoFocus autoComplete="username"
                   />
                 </div>
               </div>
@@ -80,30 +72,31 @@ export default function Login() {
                 <div className={styles.inputWrap}>
                   <span className={styles.inputIcon}>🔒</span>
                   <input
-                    id="pwd"
-                    name="pwd"
-                    type="password"
-                    className={styles.input}
-                    placeholder="••••••••"
-                    value={form.pwd}
-                    onChange={handleChange}
+                    id="pwd" name="pwd" type="password"
+                    className={styles.input} placeholder="••••••••"
+                    value={form.pwd} onChange={handleChange}
                     autoComplete="current-password"
                   />
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className={styles.submitBtn}
-                disabled={loading}
-              >
-                {loading ? (
-                  <><span className={styles.btnSpinner} /> Verificando...</>
-                ) : (
-                  'Iniciar Sesión'
-                )}
+              <button type="submit" className={styles.submitBtn} disabled={loading}>
+                {loading
+                  ? <><span className={styles.btnSpinner} /> Verificando...</>
+                  : 'Iniciar Sesión'
+                }
               </button>
             </form>
+
+            {/* Enlace a olvido de contraseña */}
+            <p style={{ textAlign:'center', marginTop:16, fontSize:'.83rem' }}>
+              <Link
+                to="/forgot-password"
+                style={{ color:'var(--primary)', fontWeight:600, textDecoration:'underline' }}
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </p>
 
             <p className={styles.hint}>
               ¿Problemas para acceder? Contacta al administrador del sistema.

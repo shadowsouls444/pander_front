@@ -1,9 +1,9 @@
 ## Ejecutar el proyecto de React
-1. Instalamos las dependencias: `npm install`
-2. Ingresamos el comando para correr el servidor: `npm run dev`
+1. Instalamos las dependencias: `pnpm install`
+2. Ingresamos el comando para correr el servidor: `pnpm run dev`
 
 ## Crear un proyecto de React
-1. Ingresamos el comando para crear el proyecto: `npm create vite@latest`
+1. Ingresamos el comando para crear el proyecto: `pnpm create vite@latest`
 2. Seleccionamos el framework: `React`
 3. De variante seleccionamos: 
 - TypeScript + React Compiler
