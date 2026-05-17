@@ -1,36 +1,62 @@
-// src/components/ui/CrudPage.jsx
-// ══════════════════════════════════════════════
-// Componente CRUD reutilizable para todas las páginas.
-// Gestiona: carga, búsqueda, modal crear/editar, confirm delete.
-// ══════════════════════════════════════════════
+// src/components/ui/CrudPage.jsx  — v6
+// FIX #4: openEdit hace conversión de tipos para que <select> pre-llene correctamente.
+//         El value de un <select> es siempre string; los FK del backend vienen como int.
+//         Se convierten todos los valores a string para que el select encuentre la opción.
 import { useState, useMemo } from 'react'
 import { PageHeader, SearchBar, Button, Table, Modal, ConfirmDialog, Alert, Spinner } from './index'
+
+/**
+ * Normaliza un valor de fila para que sea compatible con el value de un <select>.
+ * Los FK de Django se devuelven como int; el value del <option> se define como string.
+ * Esta función convierte a string los campos que parecen ser FK o booleanos.
+ */
+function normalizarParaForm(defaultForm, row) {
+  const merged = { ...defaultForm, ...row }
+  // Convertir campos numéricos a string para que <select value={...}> funcione
+  // (solo los que existen en defaultForm y son números/booleanos del row)
+  Object.keys(merged).forEach(k => {
+    const val = merged[k]
+    // Si el default es string vacío y el valor es número, convertir a string
+    if (defaultForm[k] === '' && typeof val === 'number') {
+      merged[k] = String(val)
+    }
+    // Si el default es null/string y el valor es número (FK), convertir a string
+    if ((defaultForm[k] === null || defaultForm[k] === '') && typeof val === 'number') {
+      merged[k] = String(val)
+    }
+    // Booleanos: dejar como booleanos (para checkboxes)
+    // undefined → usar el default
+    if (val === undefined || val === null) {
+      merged[k] = defaultForm[k]
+    }
+  })
+  return merged
+}
 
 export default function CrudPage({
   title,
   subtitle,
   columns,
-  fetchData,       // { data, loading, error, reload }
-  onSave,          // async (data, editId) => void
-  onDelete,        // async (row) => void
-  FormContent,     // ({ form, setForm, errors }) => JSX
-  defaultForm,     // objeto vacío inicial del formulario
-  searchFields,    // ['campo1','campo2'] para filtrar
+  fetchData,
+  onSave,
+  onDelete,
+  FormContent,
+  defaultForm,
+  searchFields,
   rowKey = 'id',
-  extraActions,    // (row) => JSX adicional en cada fila
+  extraActions,
 }) {
-  const [search, setSearch]   = useState('')
-  const [modalOpen, setModal] = useState(false)
-  const [editRow, setEditRow] = useState(null)
-  const [form, setForm]       = useState(defaultForm)
-  const [errors, setErrors]   = useState({})
-  const [saving, setSaving]   = useState(false)
-  const [delRow, setDelRow]   = useState(null)
+  const [search, setSearch]     = useState('')
+  const [modalOpen, setModal]   = useState(false)
+  const [editRow, setEditRow]   = useState(null)
+  const [form, setForm]         = useState(defaultForm)
+  const [errors, setErrors]     = useState({})
+  const [saving, setSaving]     = useState(false)
+  const [delRow, setDelRow]     = useState(null)
   const [deleting, setDeleting] = useState(false)
   const [saveError, setSaveError] = useState(null)
-  const [saveOk, setSaveOk]   = useState(null)
+  const [saveOk, setSaveOk]     = useState(null)
 
-  // ── Filtro de búsqueda ──────────────────────
   const filtered = useMemo(() => {
     if (!fetchData.data) return []
     if (!search.trim()) return fetchData.data
@@ -40,7 +66,6 @@ export default function CrudPage({
     )
   }, [fetchData.data, search, searchFields])
 
-  // ── Abrir modal crear ───────────────────────
   const openCreate = () => {
     setEditRow(null)
     setForm(defaultForm)
@@ -49,10 +74,10 @@ export default function CrudPage({
     setModal(true)
   }
 
-  // ── Abrir modal editar ──────────────────────
   const openEdit = row => {
     setEditRow(row)
-    setForm({ ...defaultForm, ...row })
+    // FIX #4: normalizar tipos para que selects/checkboxes pre-llenen
+    setForm(normalizarParaForm(defaultForm, row))
     setErrors({})
     setSaveError(null)
     setModal(true)
@@ -60,7 +85,6 @@ export default function CrudPage({
 
   const closeModal = () => { if (!saving) setModal(false) }
 
-  // ── Guardar ─────────────────────────────────
   const handleSave = async () => {
     setSaveError(null)
     setSaving(true)
@@ -78,12 +102,9 @@ export default function CrudPage({
       } else {
         setSaveError(errData?.detail || e.message || 'Error al guardar.')
       }
-    } finally {
-      setSaving(false)
-    }
+    } finally { setSaving(false) }
   }
 
-  // ── Eliminar ────────────────────────────────
   const handleDelete = async () => {
     setDeleting(true)
     try {
@@ -95,12 +116,9 @@ export default function CrudPage({
     } catch (e) {
       setSaveError(e?.response?.data?.detail || e.message || 'Error al eliminar.')
       setDelRow(null)
-    } finally {
-      setDeleting(false)
-    }
+    } finally { setDeleting(false) }
   }
 
-  // ── Columna de acciones ─────────────────────
   const actions = row => (
     <>
       {extraActions?.(row)}
@@ -111,41 +129,28 @@ export default function CrudPage({
 
   return (
     <div>
-      <PageHeader
-        title={title}
-        subtitle={subtitle}
-        action={
-          <Button onClick={openCreate} icon="➕">Nuevo</Button>
-        }
-      />
+      <PageHeader title={title} subtitle={subtitle}
+        action={<Button onClick={openCreate} icon="➕">Nuevo</Button>} />
 
-      {saveOk   && <Alert type="success" onClose={() => setSaveOk(null)}>{saveOk}</Alert>}
-      {saveError && !modalOpen && <Alert type="error" onClose={() => setSaveError(null)}>{saveError}</Alert>}
+      {saveOk    && <Alert type="success" onClose={() => setSaveOk(null)}>{saveOk}</Alert>}
+      {saveError && !modalOpen &&
+        <Alert type="error" onClose={() => setSaveError(null)}>{saveError}</Alert>}
       {fetchData.error && <Alert type="error">{fetchData.error}</Alert>}
 
       <div style={{ marginBottom: 16 }}>
-        <SearchBar value={search} onChange={setSearch} placeholder={`Buscar en ${title.toLowerCase()}...`} />
+        <SearchBar value={search} onChange={setSearch}
+          placeholder={`Buscar en ${title.toLowerCase()}...`} />
       </div>
 
       {fetchData.loading ? (
         <Spinner label="Cargando datos..." />
       ) : (
-        <Table
-          columns={columns}
-          data={filtered}
-          rowKey={rowKey}
-          actions={actions}
-          empty={`No hay ${title.toLowerCase()} registrados.`}
-        />
+        <Table columns={columns} data={filtered} rowKey={rowKey} actions={actions}
+          empty={`No hay ${title.toLowerCase()} registrados.`} />
       )}
 
-      {/* Modal crear/editar */}
-      <Modal
-        open={modalOpen}
-        onClose={closeModal}
-        title={editRow ? `Editar ${title}` : `Nuevo ${title}`}
-        size="md"
-      >
+      <Modal open={modalOpen} onClose={closeModal}
+        title={editRow ? `Editar ${title}` : `Nuevo ${title}`} size="md">
         {saveError && <Alert type="error" style={{ marginBottom: 16 }}>{saveError}</Alert>}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <FormContent form={form} setForm={setForm} errors={errors} />
@@ -158,15 +163,10 @@ export default function CrudPage({
         </div>
       </Modal>
 
-      {/* Confirm eliminar */}
-      <ConfirmDialog
-        open={!!delRow}
-        onClose={() => setDelRow(null)}
-        onConfirm={handleDelete}
-        loading={deleting}
+      <ConfirmDialog open={!!delRow} onClose={() => setDelRow(null)}
+        onConfirm={handleDelete} loading={deleting}
         title="Confirmar eliminación"
-        message={`¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.`}
-      />
+        message="¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer." />
     </div>
   )
 }
