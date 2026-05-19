@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true,                           element: <Dashboard /> },
+      { index: true,                     element: <Dashboard /> },
       { path: 'gestion-compania',              element: <GestionCompania /> },
       { path: 'gestion-unidades',              element: <GestionUnidades /> },
       { path: 'gestion-roles',                 element: <GestionRoles /> },

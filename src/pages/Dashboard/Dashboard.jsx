@@ -44,18 +44,53 @@ export default function Dashboard() {
             Resumen del sistema · {new Date().toLocaleDateString('es-CO', { dateStyle: 'long' })}
           </p>
         </div>
-        {user?.ind_super && (
+        {user?.ind_super_usuario && (
           <span className="badge badge-primary">Super Administrador</span>
         )}
       </div>
 
       {/* KPIs */}
       <div className={styles.kpiGrid}>
-        <KpiCard icon="🏢" label="Compañías registradas" value={companias.data?.length} color="primary" />
-        <KpiCard icon="👤" label="Usuarios activos"      value={usuarios.data?.filter(u => u.ind_activo)?.length} color="accent" />
-        <KpiCard icon="💼" label="Vacantes activas"      value={vacsActivas} sub={`${vacsPublicadas} publicadas`} color="success" />
-        <KpiCard icon="🧑‍💼" label="Candidatos registrados" value={candidatos.data?.length} color="info" />
-        <KpiCard icon="📋" label="Postulaciones totales"  value={postulaciones.data?.length} sub={`${postSelec} seleccionados`} color="warning" />
+        {user?.ind_super_usuario && (
+          <>
+            <KpiCard
+              icon="🏢"
+              label="Compañías registradas"
+              value={companias.data?.length}
+              color="primary"
+            />
+
+            <KpiCard
+              icon="👤"
+              label="Usuarios activos"
+              value={usuarios.data?.filter(u => u.ind_activo)?.length}
+              color="accent"
+            />
+          </>
+        )}
+
+        <KpiCard
+          icon="💼"
+          label="Vacantes activas"
+          value={vacsActivas}
+          sub={`${vacsPublicadas} publicadas`}
+          color="success"
+        />
+
+        <KpiCard
+          icon="🧑‍💼"
+          label="Candidatos registrados"
+          value={candidatos.data?.length}
+          color="info"
+        />
+
+        <KpiCard
+          icon="📋"
+          label="Postulaciones totales"
+          value={postulaciones.data?.length}
+          sub={`${postSelec} seleccionados`}
+          color="warning"
+        />
       </div>
 
       {/* Estado de postulaciones */}

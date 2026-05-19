@@ -4,8 +4,9 @@
 
 ## Crear un proyecto de React
 1. Ingresamos el comando para crear el proyecto: `pnpm create vite@latest`
-2. Seleccionamos el framework: `React`
-3. De variante seleccionamos: 
+2. Instalar dependencia:  `npm install recharts`
+3. Seleccionamos el framework: `React`
+4. De variante seleccionamos: 
 - TypeScript + React Compiler
 - JavaScript + React Compiler
 

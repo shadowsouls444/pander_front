@@ -86,6 +86,10 @@ export const candidatosService = {
   getReporte:         (cid, p)     => api.get(`/api/candidatos/companias/${cid}/reporte-postulaciones/`, { params: p }),
   vCandidatos:        (cid, p)     => api.get(`/api/candidatos/v/companias/${cid}/candidatos/`, { params: p }),
   vPostulaciones:     (cid, p)     => api.get(`/api/candidatos/v/companias/${cid}/postulaciones/`, { params: p }),
+  tomarDecision:  (cid, id, data) =>
+    api.post(`/api/candidatos/companias/${cid}/postulaciones/${id}/decision/`, data),
+  finalizarPost:  (cid, id, data) =>
+    api.post(`/api/candidatos/companias/${cid}/postulaciones/${id}/finalizar/`, data),
 }
 
 export const evaluacionService = {
