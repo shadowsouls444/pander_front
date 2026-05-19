@@ -8,50 +8,67 @@ import CrudPage from '../../components/ui/CrudPage'
 import { Input, Select, Badge, Alert } from '../../components/ui'
 
 const COLS = [
-  { key: 'id_interno',              label: 'ID',    width: 60 },
-  { key: 'analista_nombre_completo',label: 'Analista' },
-  { key: 'login',                   label: 'Login',   width: 130 },
-  { key: 'email',                   label: 'Email' },
-  { key: 'rol_descripcion',         label: 'Rol' },
-  { key: 'ind_super_usuario', label: 'Super',  width: 70,
-    render: v => <Badge variant={v ? 'warning':'primary'}>{v?'Sí':'No'}</Badge> },
-  { key: 'ind_activo',       label: 'Activo', width: 70,
-    render: v => <Badge variant={v ? 'success':'danger'}>{v?'Sí':'No'}</Badge> },
-  { key: 'ind_bloqueo',      label: 'Bloq.',  width: 70,
-    render: v => <Badge variant={v ? 'danger':'success'}>{v?'Sí':'No'}</Badge> },
+  { key: 'id_interno', label: 'ID', width: 60 },
+  { key: 'analista_nombre_completo', label: 'Analista' },
+  { key: 'login', label: 'Login', width: 130 },
+  { key: 'email', label: 'Email' },
+  { key: 'rol_descripcion', label: 'Rol' },
+  {
+    key: 'ind_super_usuario', label: 'Super', width: 70,
+    render: v => <Badge variant={v ? 'warning' : 'primary'}>{v ? 'Sí' : 'No'}</Badge>
+  },
+  {
+    key: 'ind_activo', label: 'Activo', width: 70,
+    render: v => <Badge variant={v ? 'success' : 'danger'}>{v ? 'Sí' : 'No'}</Badge>
+  },
+  {
+    key: 'ind_bloqueo', label: 'Bloq.', width: 70,
+    render: v => <Badge variant={v ? 'danger' : 'success'}>{v ? 'Sí' : 'No'}</Badge>
+  },
 ]
 
 function Form({ form, setForm, errors, isEdit }) {
   const { user } = useAuth()
   const cid = user?.compania
-  const roles    = useFetch(() => accesoService.getRoles())
+  const roles = useFetch(() => accesoService.getRoles())
   const analistas = useFetch(() => accesoService.getAnalistas(cid), [cid])
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  console.log(form)
 
   return (
     <>
       {/* Analista — determina nombre/email al crear */}
       <Select
         label="Analista asociado"
-        value={String(form.analista ?? '')}
+        value={String(form.analista_id ?? form.analista ?? '')}
         onChange={e => {
-          const analistaId = e.target.value ? Number(e.target.value) : null
-          set('analista', analistaId)
+          const analistaId = e.target.value
+            ? Number(e.target.value)
+            : null
+
+          setForm(f => ({
+            ...f,
+            analista: analistaId,
+            analista_id: analistaId,
+          }))
+
           // Auto-completar email desde el analista seleccionado
           if (analistaId && !form.email) {
-            // El email se ingresa manualmente (analista no tiene email propio)
+            // lógica futura
           }
         }}
       >
         <option value="">Sin analista</option>
+
         {analistas.data?.map(a => (
-          <option key={a.id} value={a.id}>
+          <option key={a.id} value={String(a.id)}>
             {a.primer_nombre} {a.primer_apellido}
           </option>
         ))}
       </Select>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         {/* Login — auto-generado, editable */}
         <Input
           label={`Login ${isEdit ? '' : '(auto-generado si vacío)'}`}
@@ -81,27 +98,36 @@ function Form({ form, setForm, errors, isEdit }) {
 
       <Select
         label="Rol *"
-        value={String(form.rol ?? '')}
-        onChange={e => set('rol', e.target.value ? Number(e.target.value) : '')}
+        value={String(form.rol_id ?? form.rol ?? '')}
+        onChange={e => setForm(f => ({
+          ...f,
+          rol: e.target.value ? Number(e.target.value) : '',
+          rol_id: e.target.value ? Number(e.target.value) : ''
+        }))}
         error={errors.rol}
       >
         <option value="">Seleccionar rol...</option>
-        {roles.data?.map(r => <option key={r.id} value={r.id}>{r.descripcion}</option>)}
+
+        {roles.data?.map(r => (
+          <option key={r.id} value={String(r.id)}>
+            {r.descripcion}
+          </option>
+        ))}
       </Select>
 
       {/* Checkboxes — siempre reflejan el valor del form (funciona en edición) */}
-      <div style={{ display:'flex', gap:20, flexWrap:'wrap', paddingTop:4 }}>
+      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', paddingTop: 4 }}>
         {[
           ['ind_super_usuario', 'Super Usuario'],
-          ['ind_activo',        'Activo'],
-          ['ind_bloqueo',       'Bloqueado'],
+          ['ind_activo', 'Activo'],
+          ['ind_bloqueo', 'Bloqueado'],
         ].map(([k, l]) => (
-          <label key={k} style={{ display:'flex', alignItems:'center', gap:8, fontSize:'.88rem', fontWeight:500, cursor:'pointer' }}>
+          <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '.88rem', fontWeight: 500, cursor: 'pointer' }}>
             <input
               type="checkbox"
               checked={!!form[k]}
               onChange={e => set(k, e.target.checked)}
-              style={{ width:16, height:16, cursor:'pointer' }}
+              style={{ width: 16, height: 16, cursor: 'pointer' }}
             />
             {l}
           </label>
@@ -113,8 +139,8 @@ function Form({ form, setForm, errors, isEdit }) {
 
 export default function GestionUsuarios() {
   const { user } = useAuth()
-  const cid      = user?.compania
-  const fetch    = useFetch(() => accesoService.vUsuarios(cid), [cid])
+  const cid = user?.compania
+  const fetch = useFetch(() => accesoService.vUsuarios(cid), [cid])
   const [notif, setNotif] = useState(null)  // {type, text}
 
   const DEFAULT = {
@@ -142,7 +168,7 @@ export default function GestionUsuarios() {
         columns={COLS}
         fetchData={fetch}
         defaultForm={DEFAULT}
-        searchFields={['login','email','rol_descripcion','analista_nombre_completo']}
+        searchFields={['login', 'email', 'rol_descripcion', 'analista_nombre_completo']}
         FormContent={({ form, setForm, errors }) => (
           <Form
             form={form}
@@ -154,10 +180,17 @@ export default function GestionUsuarios() {
         onSave={async (data, id) => {
           const payload = {
             ...data,
+
+            rol: data.rol_id || data.rol,
+            analista: data.analista_id || data.analista,
+
             compania: cid,
             usuario_modificacion: id ? user?.id : undefined,
             usuario_creacion: user?.id || 1,
           }
+
+          delete payload.rol_id
+          delete payload.analista_id
 
           if (id) {
             // PUT — pwd vacío → el serializer no la sobreescribe
@@ -168,9 +201,9 @@ export default function GestionUsuarios() {
             const res = await accesoService.createUsuario(cid, payload)
             const d = res.data
             if (d.correo_enviado) {
-              setNotif({ type:'ok', text:`✅ Usuario "${d.login_generado}" creado. Credenciales enviadas al correo ${data.email}.` })
+              setNotif({ type: 'ok', text: `✅ Usuario "${d.login_generado}" creado. Credenciales enviadas al correo ${data.email}.` })
             } else {
-              setNotif({ type:'info', text:`✅ Usuario "${d.login_generado || data.login}" creado. No se pudo enviar el correo.` })
+              setNotif({ type: 'info', text: `✅ Usuario "${d.login_generado || data.login}" creado. No se pudo enviar el correo.` })
             }
             setTimeout(() => setNotif(null), 6000)
             return res

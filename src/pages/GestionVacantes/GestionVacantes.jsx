@@ -10,35 +10,43 @@
 // En onChange: guardar como Number para que el PUT envíe int al backend.
 // ─────────────────────────────────────────────
 import { useFetch } from '../../hooks/useFetch'
-import { useAuth }  from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 import { vacantesService, empresaService } from '../../services'
 import CrudPage from '../../components/ui/CrudPage'
 import { Input, Select, Badge } from '../../components/ui'
 
 const COLS = [
-  { key: 'id_interno',      label: 'ID',    width: 60 },
-  { key: 'descripcion',     label: 'Descripción',
-    render: v => <span title={v}>{v?.slice(0, 50)}{v?.length > 50 ? '...' : ''}</span> },
-  { key: 'unidad_descripcion',        label: 'Unidad' },
-  { key: 'estado_descripcion',        label: 'Estado',    width: 120,
+  { key: 'id_interno', label: 'ID', width: 60 },
+  {
+    key: 'descripcion', label: 'Descripción',
+    render: v => <span title={v}>{v?.slice(0, 50)}{v?.length > 50 ? '...' : ''}</span>
+  },
+  { key: 'unidad_descripcion', label: 'Unidad' },
+  {
+    key: 'estado_descripcion', label: 'Estado', width: 120,
     render: v => {
-      const m = { Abierta:'success', 'En Evaluación':'warning', Cerrada:'danger', Finalizada:'primary' }
+      const m = { Abierta: 'success', 'En Evaluación': 'warning', Cerrada: 'danger', Finalizada: 'primary' }
       return <Badge variant={m[v] || 'info'}>{v}</Badge>
-    } },
-  { key: 'tipo_contrato_descripcion', label: 'Contrato',  width: 130 },
-  { key: 'anio_experiencia',          label: 'Exp.(años)', width: 90 },
-  { key: 'salario_minimo',            label: 'Sal. Min.',  width: 110,
-    render: v => v ? `$${Number(v).toLocaleString('es-CO')}` : '—' },
-  { key: 'ind_publicada', label: 'Publicada', width: 90,
-    render: v => <Badge variant={v ? 'success' : 'warning'}>{v ? 'Sí' : 'No'}</Badge> },
+    }
+  },
+  { key: 'tipo_contrato_descripcion', label: 'Contrato', width: 130 },
+  { key: 'anio_experiencia', label: 'Exp.(años)', width: 90 },
+  {
+    key: 'salario_minimo', label: 'Sal. Min.', width: 110,
+    render: v => v ? `$${Number(v).toLocaleString('es-CO')}` : '—'
+  },
+  {
+    key: 'ind_publicada', label: 'Publicada', width: 90,
+    render: v => <Badge variant={v ? 'success' : 'warning'}>{v ? 'Sí' : 'No'}</Badge>
+  },
 ]
 
 function Form({ form, setForm }) {
   const { user } = useAuth()
   const cid = user?.compania
-  const estados   = useFetch(() => vacantesService.getEstadosVacante())
+  const estados = useFetch(() => vacantesService.getEstadosVacante())
   const contratos = useFetch(() => vacantesService.getTiposContrato())
-  const unidades  = useFetch(() => empresaService.getUnidades(cid), [cid])
+  const unidades = useFetch(() => empresaService.getUnidades(cid), [cid])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -66,8 +74,12 @@ function Form({ form, setForm }) {
         */}
         <Select
           label="Unidad Organizacional *"
-          value={String(form.unidad ?? '')}
-          onChange={e => set('unidad', e.target.value ? Number(e.target.value) : '')}
+          value={String(form.unidad_id ?? form.unidad ?? '')}
+          onChange={e => setForm(f => ({
+            ...f,
+            unidad: e.target.value ? Number(e.target.value) : '',
+            unidad_id: e.target.value ? Number(e.target.value) : ''
+          }))}
         >
           <option value="">Seleccionar...</option>
           {unidades.data?.map(u => (
@@ -77,23 +89,35 @@ function Form({ form, setForm }) {
 
         <Select
           label="Estado *"
-          value={String(form.estado ?? '')}
-          onChange={e => set('estado', e.target.value ? Number(e.target.value) : '')}
+          value={String(form.estado_id ?? form.estado ?? '')}
+          onChange={e => setForm(f => ({
+            ...f,
+            estado: e.target.value ? Number(e.target.value) : '',
+            estado_id: e.target.value ? Number(e.target.value) : ''
+          }))}
         >
           <option value="">Seleccionar...</option>
           {estados.data?.map(e => (
-            <option key={e.id} value={String(e.id)}>{e.descripcion}</option>
+            <option key={e.id} value={String(e.id)}>
+              {e.descripcion}
+            </option>
           ))}
         </Select>
 
         <Select
           label="Tipo Contrato *"
-          value={String(form.tipo_contrato ?? '')}
-          onChange={e => set('tipo_contrato', e.target.value ? Number(e.target.value) : '')}
+          value={String(form.tipo_contrato_id ?? form.tipo_contrato ?? '')}
+          onChange={e => setForm(f => ({
+            ...f,
+            tipo_contrato: e.target.value ? Number(e.target.value) : '',
+            tipo_contrato_id: e.target.value ? Number(e.target.value) : ''
+          }))}
         >
           <option value="">Seleccionar...</option>
           {contratos.data?.map(c => (
-            <option key={c.id} value={String(c.id)}>{c.descripcion}</option>
+            <option key={c.id} value={String(c.id)}>
+              {c.descripcion}
+            </option>
           ))}
         </Select>
 
@@ -138,19 +162,19 @@ function Form({ form, setForm }) {
 
 export default function GestionVacantes() {
   const { user } = useAuth()
-  const cid   = user?.compania
+  const cid = user?.compania
   const fetch = useFetch(() => vacantesService.vVacantes(cid), [cid])
 
   const DEFAULT = {
-    descripcion:      '',
-    unidad:           '',
-    estado:           '',
-    tipo_contrato:    '',
+    descripcion: '',
+    unidad: '',
+    estado: '',
+    tipo_contrato: '',
     anio_experiencia: null,
-    salario_minimo:   null,
-    salario_maximo:   null,
-    ind_activa:       true,
-    ind_publicada:    false,
+    salario_minimo: null,
+    salario_maximo: null,
+    ind_activa: true,
+    ind_publicada: false,
     usuario_creacion: user?.id || 1,
   }
 
@@ -164,7 +188,12 @@ export default function GestionVacantes() {
       searchFields={['descripcion', 'unidad_descripcion', 'estado_descripcion']}
       FormContent={Form}
       onSave={async (data, id) => {
-        const payload = { ...data }
+        const payload = {
+          ...data,
+          unidad: data.unidad_id || data.unidad,
+          estado: data.estado_id || data.estado,
+          tipo_contrato: data.tipo_contrato_id || data.tipo_contrato,
+        }
         if (!id) {
           const all = await vacantesService.getVacantes(cid)
           payload.id_interno = (all.data.length || 0) + 1
