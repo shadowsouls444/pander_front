@@ -1,36 +1,79 @@
-// src/components/ui/CrudPage.jsx  — v6
-// FIX #4: openEdit hace conversión de tipos para que <select> pre-llene correctamente.
-//         El value de un <select> es siempre string; los FK del backend vienen como int.
-//         Se convierten todos los valores a string para que el select encuentre la opción.
+// src/components/ui/CrudPage.jsx
+// ────────────────────────────────────────────────────────────
+// FIX GLOBAL DE SELECTS EN EDICIÓN:
+// El DOM de <select> compara su `value` con el `value` de cada <option>
+// como STRINGS. Los FK del backend llegan como int.
+// Si el form guarda int y el option tiene value={int}, React los convierte
+// a string al renderizar y la comparación falla silenciosamente cuando
+// el form usa `value={form.campo}` sin conversión explícita.
+//
+// Solución en openEdit(): aplicar toStringIds() que convierte todos los
+// valores numéricos a string. Los Forms pueden hacer Number() en onChange
+// para enviar el tipo correcto al backend.
+// ────────────────────────────────────────────────────────────
 import { useState, useMemo } from 'react'
-import { PageHeader, SearchBar, Button, Table, Modal, ConfirmDialog, Alert, Spinner } from './index'
+import {
+  PageHeader, SearchBar, Button, Table,
+  Modal, ConfirmDialog, Alert, Spinner,
+} from './index'
 
 /**
- * Normaliza un valor de fila para que sea compatible con el value de un <select>.
- * Los FK de Django se devuelven como int; el value del <option> se define como string.
- * Esta función convierte a string los campos que parecen ser FK o booleanos.
+ * Convierte a string todos los valores del form que sean numéricos,
+ * excepto los que en defaultForm son number (campos de cantidad/dinero).
+ * Así, los <select value={...}> encuentran su <option> correctamente.
+ *
+ * Regla:
+ *   - Si defaultForm[k] === '' (string vacío) y row[k] es número → String
+ *   - Si defaultForm[k] === null y row[k] es número → String
+ *     (FK nullable: el select necesita string para comparar)
+ *   - Si defaultForm[k] es number (0, null con context numérico) → mantener
+ *   - Booleanos siempre como boolean
+ *   - null/undefined → usar valor de defaultForm
  */
-function normalizarParaForm(defaultForm, row) {
-  const merged = { ...defaultForm, ...row }
-  // Convertir campos numéricos a string para que <select value={...}> funcione
-  // (solo los que existen en defaultForm y son números/booleanos del row)
-  Object.keys(merged).forEach(k => {
-    const val = merged[k]
-    // Si el default es string vacío y el valor es número, convertir a string
-    if (defaultForm[k] === '' && typeof val === 'number') {
-      merged[k] = String(val)
+function prepararFormParaEdicion(defaultForm, row) {
+  const resultado = {}
+
+  for (const key of Object.keys(defaultForm)) {
+    const defVal = defaultForm[key]
+    const rowVal = row[key]
+
+    // Valor del row indefinido o null → usar default
+    if (rowVal === undefined || rowVal === null) {
+      resultado[key] = defVal
+      continue
     }
-    // Si el default es null/string y el valor es número (FK), convertir a string
-    if ((defaultForm[k] === null || defaultForm[k] === '') && typeof val === 'number') {
-      merged[k] = String(val)
+
+    // Booleano siempre como boolean
+    if (typeof rowVal === 'boolean') {
+      resultado[key] = rowVal
+      continue
     }
-    // Booleanos: dejar como booleanos (para checkboxes)
-    // undefined → usar el default
-    if (val === undefined || val === null) {
-      merged[k] = defaultForm[k]
+
+    // FK: defaultForm tiene '' (string) pero row devuelve int
+    // → convertir a string para que <select value="3"> encuentre <option value="3">
+    if (typeof rowVal === 'number' && typeof defVal === 'string') {
+      resultado[key] = String(rowVal)
+      continue
     }
-  })
-  return merged
+
+    // FK nullable: defaultForm tiene null y row devuelve int
+    if (typeof rowVal === 'number' && defVal === null) {
+      resultado[key] = String(rowVal)
+      continue
+    }
+
+    // Resto de casos: usar el valor del row tal cual
+    resultado[key] = rowVal
+  }
+
+  // Incluir campos del row que no estén en defaultForm (ej: id, id_interno)
+  for (const key of Object.keys(row)) {
+    if (!(key in resultado)) {
+      resultado[key] = row[key]
+    }
+  }
+
+  return resultado
 }
 
 export default function CrudPage({
@@ -46,26 +89,28 @@ export default function CrudPage({
   rowKey = 'id',
   extraActions,
 }) {
-  const [search, setSearch]     = useState('')
-  const [modalOpen, setModal]   = useState(false)
-  const [editRow, setEditRow]   = useState(null)
-  const [form, setForm]         = useState(defaultForm)
-  const [errors, setErrors]     = useState({})
-  const [saving, setSaving]     = useState(false)
-  const [delRow, setDelRow]     = useState(null)
-  const [deleting, setDeleting] = useState(false)
+  const [search,    setSearch]    = useState('')
+  const [modalOpen, setModal]     = useState(false)
+  const [editRow,   setEditRow]   = useState(null)
+  const [form,      setForm]      = useState(defaultForm)
+  const [errors,    setErrors]    = useState({})
+  const [saving,    setSaving]    = useState(false)
+  const [delRow,    setDelRow]    = useState(null)
+  const [deleting,  setDeleting]  = useState(false)
   const [saveError, setSaveError] = useState(null)
-  const [saveOk, setSaveOk]     = useState(null)
+  const [saveOk,    setSaveOk]    = useState(null)
 
+  // ── Búsqueda ──────────────────────────────────────────────
   const filtered = useMemo(() => {
     if (!fetchData.data) return []
-    if (!search.trim()) return fetchData.data
+    if (!search.trim())  return fetchData.data
     const q = search.toLowerCase()
     return fetchData.data.filter(row =>
       searchFields.some(f => String(row[f] ?? '').toLowerCase().includes(q))
     )
   }, [fetchData.data, search, searchFields])
 
+  // ── Abrir modal CREAR ──────────────────────────────────────
   const openCreate = () => {
     setEditRow(null)
     setForm(defaultForm)
@@ -74,10 +119,11 @@ export default function CrudPage({
     setModal(true)
   }
 
+  // ── Abrir modal EDITAR ────────────────────────────────────
   const openEdit = row => {
     setEditRow(row)
-    // FIX #4: normalizar tipos para que selects/checkboxes pre-llenen
-    setForm(normalizarParaForm(defaultForm, row))
+    // FIX: convertir FK int→string para que los <select> pre-llenen
+    setForm(prepararFormParaEdicion(defaultForm, row))
     setErrors({})
     setSaveError(null)
     setModal(true)
@@ -85,6 +131,7 @@ export default function CrudPage({
 
   const closeModal = () => { if (!saving) setModal(false) }
 
+  // ── Guardar ───────────────────────────────────────────────
   const handleSave = async () => {
     setSaveError(null)
     setSaving(true)
@@ -102,9 +149,12 @@ export default function CrudPage({
       } else {
         setSaveError(errData?.detail || e.message || 'Error al guardar.')
       }
-    } finally { setSaving(false) }
+    } finally {
+      setSaving(false)
+    }
   }
 
+  // ── Eliminar ──────────────────────────────────────────────
   const handleDelete = async () => {
     setDeleting(true)
     try {
@@ -116,21 +166,31 @@ export default function CrudPage({
     } catch (e) {
       setSaveError(e?.response?.data?.detail || e.message || 'Error al eliminar.')
       setDelRow(null)
-    } finally { setDeleting(false) }
+    } finally {
+      setDeleting(false)
+    }
   }
 
+  // ── Acciones por fila ─────────────────────────────────────
   const actions = row => (
     <>
       {extraActions?.(row)}
-      <Button size="sm" variant="secondary" onClick={() => openEdit(row)} icon="✏️">Editar</Button>
-      <Button size="sm" variant="danger"    onClick={() => setDelRow(row)} icon="🗑️">Eliminar</Button>
+      <Button size="sm" variant="secondary" onClick={() => openEdit(row)} icon="✏️">
+        Editar
+      </Button>
+      <Button size="sm" variant="danger" onClick={() => setDelRow(row)} icon="🗑️">
+        Eliminar
+      </Button>
     </>
   )
 
   return (
     <div>
-      <PageHeader title={title} subtitle={subtitle}
-        action={<Button onClick={openCreate} icon="➕">Nuevo</Button>} />
+      <PageHeader
+        title={title}
+        subtitle={subtitle}
+        action={<Button onClick={openCreate} icon="➕">Nuevo</Button>}
+      />
 
       {saveOk    && <Alert type="success" onClose={() => setSaveOk(null)}>{saveOk}</Alert>}
       {saveError && !modalOpen &&
@@ -138,35 +198,57 @@ export default function CrudPage({
       {fetchData.error && <Alert type="error">{fetchData.error}</Alert>}
 
       <div style={{ marginBottom: 16 }}>
-        <SearchBar value={search} onChange={setSearch}
-          placeholder={`Buscar en ${title.toLowerCase()}...`} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={`Buscar en ${title.toLowerCase()}...`}
+        />
       </div>
 
       {fetchData.loading ? (
         <Spinner label="Cargando datos..." />
       ) : (
-        <Table columns={columns} data={filtered} rowKey={rowKey} actions={actions}
-          empty={`No hay ${title.toLowerCase()} registrados.`} />
+        <Table
+          columns={columns}
+          data={filtered}
+          rowKey={rowKey}
+          actions={actions}
+          empty={`No hay ${title.toLowerCase()} registrados.`}
+        />
       )}
 
-      <Modal open={modalOpen} onClose={closeModal}
-        title={editRow ? `Editar ${title}` : `Nuevo ${title}`} size="md">
-        {saveError && <Alert type="error" style={{ marginBottom: 16 }}>{saveError}</Alert>}
+      {/* Modal crear / editar */}
+      <Modal
+        open={modalOpen}
+        onClose={closeModal}
+        title={editRow ? `Editar ${title}` : `Nuevo ${title}`}
+        size="md"
+      >
+        {saveError && (
+          <Alert type="error" style={{ marginBottom: 16 }}>{saveError}</Alert>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <FormContent form={form} setForm={setForm} errors={errors} />
         </div>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 24 }}>
-          <Button variant="ghost" onClick={closeModal} disabled={saving}>Cancelar</Button>
+          <Button variant="ghost" onClick={closeModal} disabled={saving}>
+            Cancelar
+          </Button>
           <Button onClick={handleSave} loading={saving} icon="💾">
             {editRow ? 'Actualizar' : 'Crear'}
           </Button>
         </div>
       </Modal>
 
-      <ConfirmDialog open={!!delRow} onClose={() => setDelRow(null)}
-        onConfirm={handleDelete} loading={deleting}
+      {/* Confirmar eliminar */}
+      <ConfirmDialog
+        open={!!delRow}
+        onClose={() => setDelRow(null)}
+        onConfirm={handleDelete}
+        loading={deleting}
         title="Confirmar eliminación"
-        message="¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer." />
+        message="¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer."
+      />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import styles from './Login.module.css'
+import logo from '../../assets/logo.png'
 
 export default function Login() {
   const { login, loading } = useAuth()
@@ -36,7 +37,7 @@ export default function Login() {
       <div className={styles.wrapper}>
         <div className={styles.header}>
           <div className={styles.logo}>
-            <span className={styles.logoIcon}>🎯</span>
+            <img src={logo} alt="Logo" className={styles.logoIcon}/>
             <span className={styles.logoText}>Pander</span>
           </div>
           <p className={styles.tagline}>Sistema de Gestión de Talento Humano</p>

@@ -2,6 +2,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import styles from './Layout.module.css'
+import logo from '../../assets/logo.png'
 
 const NAV_ITEMS = [
   { to: '/',                    icon: '🏠', label: 'Dashboard'       },
@@ -25,7 +26,7 @@ export default function Sidebar({ collapsed, onToggle }) {
     <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
       {/* Logo */}
       <div className={styles.sidebarLogo}>
-        <span className={styles.logoIcon}>🎯</span>
+        <img src={logo} alt="Logo" className={styles.logoIcon}/>
         {!collapsed && <span className={styles.logoText}>Pander</span>}
         <button className={styles.collapseBtn} onClick={onToggle} title={collapsed ? 'Expandir' : 'Colapsar'}>
           {collapsed ? '▶' : '◀'}

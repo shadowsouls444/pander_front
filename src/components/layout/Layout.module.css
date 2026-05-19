@@ -17,11 +17,19 @@
 
 /* Logo */
 .sidebarLogo {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 1%;
   padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.12);
   min-height: 64px;
 }
-.logoIcon { font-size: 1.5rem; flex-shrink: 0; }
+/*.logoIcon { font-size: 1.5rem; flex-shrink: 0; }*/
+.logoIcon {
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    width: 40%;
+    height: 50%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.2));
+}
 .logoText { font-size: 1.2rem; font-weight: 800; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; }
 .collapseBtn {
   background: rgba(255,255,255,.12); border: none; cursor: pointer;

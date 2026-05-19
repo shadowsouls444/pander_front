@@ -9,6 +9,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 import styles from '../components/layout/Layout.module.css'
+import logo from '../assets/logo.png'
 
 // Solo fallback visual cuando la BD devuelve icono vacío
 const ICON_FALLBACK = {
@@ -274,7 +275,7 @@ export default function MainLayout() {
       {/* ── Sidebar ── */}
       <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
         <div className={styles.sidebarLogo}>
-          <span className={styles.logoIcon}>🎯</span>
+          <img src={logo} alt="Logo" className={styles.logoIcon}/>
           {!collapsed && <span className={styles.logoText}>Pander</span>}
           <button className={styles.collapseBtn}
             onClick={() => setCollapsed(c => !c)}>
