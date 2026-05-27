@@ -16,6 +16,7 @@ import GestionCandidatos from '../pages/GestionCandidatos/GestionCandidatos'
 import GestionPostulaciones from '../pages/GestionPostulaciones/GestionPostulaciones'
 import GestionEvaluaciones from '../pages/GestionEvaluaciones/GestionEvaluaciones'
 import Evaluacion from '../pages/Evaluacion/Evaluacion'
+import ImportacionMasiva from '../pages/ImportacionMasiva/ImportacionMasiva'
 
 export const router = createBrowserRouter([
   // ── Rutas públicas (sin sesión) ───────────────────────────
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true,                     element: <Dashboard /> },
+      { path: "importacion", element: <ImportacionMasiva /> },
       { path: 'gestion-compania',              element: <GestionCompania /> },
       { path: 'gestion-unidades',              element: <GestionUnidades /> },
       { path: 'gestion-roles',                 element: <GestionRoles /> },

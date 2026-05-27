@@ -16,7 +16,7 @@ import {
   PageHeader, SearchBar, Button, Table,
   Modal, ConfirmDialog, Alert, Spinner,
 } from './index'
-
+import { MdOutlineCreateNewFolder, MdOutlineCreate, MdDeleteOutline, MdOutlineSave } from "react-icons/md";
 /**
  * Convierte a string todos los valores del form que sean numéricos,
  * excepto los que en defaultForm son number (campos de cantidad/dinero).
@@ -175,10 +175,10 @@ export default function CrudPage({
   const actions = row => (
     <>
       {extraActions?.(row)}
-      <Button size="sm" variant="secondary" onClick={() => openEdit(row)} icon="✏️">
+      <Button size="sm" variant="secondary" onClick={() => openEdit(row)} icon={<MdOutlineCreate />}>
         Editar
       </Button>
-      <Button size="sm" variant="danger" onClick={() => setDelRow(row)} icon="🗑️">
+      <Button size="sm" variant="danger" onClick={() => setDelRow(row)} icon={<MdDeleteOutline />}>
         Eliminar
       </Button>
     </>
@@ -189,7 +189,7 @@ export default function CrudPage({
       <PageHeader
         title={title}
         subtitle={subtitle}
-        action={<Button onClick={openCreate} icon="➕">Nuevo</Button>}
+        action={<Button onClick={openCreate} icon={<MdOutlineCreateNewFolder />}>Nuevo</Button>}
       />
 
       {saveOk    && <Alert type="success" onClose={() => setSaveOk(null)}>{saveOk}</Alert>}
@@ -234,7 +234,7 @@ export default function CrudPage({
           <Button variant="ghost" onClick={closeModal} disabled={saving}>
             Cancelar
           </Button>
-          <Button onClick={handleSave} loading={saving} icon="💾">
+          <Button onClick={handleSave} loading={saving} icon={<MdOutlineSave />}>
             {editRow ? 'Actualizar' : 'Crear'}
           </Button>
         </div>

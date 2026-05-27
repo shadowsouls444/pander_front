@@ -3,7 +3,7 @@
 // Librería de componentes reutilizables Pander UI
 // ══════════════════════════════════════════════
 import styles from './ui.module.css'
-
+import { IoIosSearch } from "react-icons/io";
 /* ── Spinner ── */
 export function Spinner({ size = 'md', label = 'Cargando...' }) {
   return (
@@ -155,7 +155,7 @@ export function Table({ columns, data, loading, empty = 'Sin datos', rowKey = 'i
 export function SearchBar({ value, onChange, placeholder = 'Buscar...' }) {
   return (
     <div className={styles.searchBar}>
-      <span className={styles.searchIcon}>🔍</span>
+      <span className={styles.searchIcon}><IoIosSearch /></span>
       <input
         className={styles.searchInput}
         value={value}

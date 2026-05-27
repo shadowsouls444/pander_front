@@ -1,5 +1,5 @@
 {
-  "name": "pander",
+  "name": "pander-front",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,24 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.16.0",
+    "axios": "^1.16.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-icons": "^5.6.0",
     "react-router-dom": "^7.15.0",
     "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@eslint/js": "^10.0.1",
-    "@rolldown/plugin-babel": "^0.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^10.2.1",
+    "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.5.0",
-    "vite": "^8.0.10"
+    "globals": "^16.2.0",
+    "vite": "^5.4.21"
   }
 }
