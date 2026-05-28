@@ -6,6 +6,8 @@ import { useSearchParams } from 'react-router-dom'
 import { evaluacionService } from '../../services'
 import styles from './EvaluacionPublica.module.css'
 import logo from '../../assets/logo.png'
+import celebrar from '../../assets/papel-picado.png'
+import { FaExclamationCircle } from "react-icons/fa";
 
 const MAX_POR_HABILIDAD = 15   // debe coincidir con MotorCAT.MAX_ITEMS
 
@@ -136,7 +138,7 @@ export default function EvaluacionPublica() {
   )
   if (estado === 'error') return (
     <div className={styles.page}><div className={styles.card}>
-      <div style={{ fontSize:'3rem', marginBottom:16 }}>⚠️</div>
+      <div style={{ fontSize:'3rem', marginBottom:16 }}><FaExclamationCircle /></div>
       <h2 style={{ color:'var(--text-h)' }}>No se pudo cargar</h2>
       <p style={{ color:'var(--text-muted)', marginTop:8 }}>{error}</p>
       <p style={{ marginTop:16, fontSize:'.85rem', color:'var(--text-muted)' }}>
@@ -148,7 +150,7 @@ export default function EvaluacionPublica() {
     const niv = nivel(resultado?.theta_final)
     return (
       <div className={styles.page}><div className={styles.card}>
-        <div style={{ fontSize:'3rem', marginBottom:16 }}>🎉</div>
+        <img src={celebrar} style={{ fontSize:'3rem', marginBottom:16, width: 50, height:50 }}/>
         <h2 style={{ color:'var(--primary)', marginBottom:8 }}>¡Evaluación completada!</h2>
         <p style={{ color:'var(--text-muted)', marginBottom:24 }}>
           El equipo de RRHH revisará tus resultados y se comunicará contigo.

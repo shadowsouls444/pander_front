@@ -4,11 +4,16 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import styles from './Login.module.css'
 import logo from '../../assets/logo.png'
+import cerebro from '../../assets/cerebro.png'
+import { GoPeople } from "react-icons/go";
+import { GiPadlock } from "react-icons/gi";
+import { FaExclamationCircle } from "react-icons/fa";
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 
 export default function Login() {
   const { login, loading } = useAuth()
   const navigate = useNavigate()
-
+  const [showPwd, setShowPwd] = useState(false)
   const [form, setForm]   = useState({ login: '', pwd: '' })
   const [error, setError] = useState(null)
 
@@ -50,7 +55,7 @@ export default function Login() {
 
             {error && (
               <div className={styles.errorBanner}>
-                <span>⚠️</span> {error}
+                <span><FaExclamationCircle /></span> {error}
               </div>
             )}
 
@@ -58,7 +63,7 @@ export default function Login() {
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="login">Usuario</label>
                 <div className={styles.inputWrap}>
-                  <span className={styles.inputIcon}>👤</span>
+                  <span className={styles.inputIcon}><GoPeople /></span>
                   <input
                     id="login" name="login" type="text"
                     className={styles.input} placeholder="Ej: admin"
@@ -69,15 +74,36 @@ export default function Login() {
               </div>
 
               <div className={styles.field}>
-                <label className={styles.label} htmlFor="pwd">Contraseña</label>
+                <label className={styles.label} htmlFor="pwd">
+                  Contraseña
+                </label>
+
                 <div className={styles.inputWrap}>
-                  <span className={styles.inputIcon}>🔒</span>
+
+                  <span className={styles.inputIcon}>
+                    <GiPadlock />
+                  </span>
+
                   <input
-                    id="pwd" name="pwd" type="password"
-                    className={styles.input} placeholder="••••••••"
-                    value={form.pwd} onChange={handleChange}
+                    id="pwd"
+                    name="pwd"
+                    type={showPwd ? 'text' : 'password'}
+                    className={styles.input}
+                    placeholder="••••••••"
+                    value={form.pwd}
+                    onChange={handleChange}
                     autoComplete="current-password"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd(v => !v)}
+                    className={styles.eyeBtn}
+                    aria-label={showPwd ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showPwd ? <MdVisibilityOff /> : <MdVisibility />}
+                  </button>
+
                 </div>
               </div>
 
@@ -106,7 +132,9 @@ export default function Login() {
 
           <div className={styles.cardRight}>
             <div className={styles.illustration}>
-              <div className={styles.illuIcon}>🧠</div>
+              <div>
+                <img src={cerebro} alt="Logo" className={styles.illuIcon}/>
+              </div>
               <h3 className={styles.illuTitle}>Evaluación Adaptativa</h3>
               <p className={styles.illuText}>
                 Selección de talento humano basada en competencias blandas,

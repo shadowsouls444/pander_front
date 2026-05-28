@@ -109,7 +109,7 @@
   padding: 48px 36px;
 }
 .illustration { text-align: center; }
-.illuIcon { font-size: 4rem; margin-bottom: 16px; }
+.illuIcon { font-size: 4rem; margin-bottom: 16px; width: 30%; height: 30%;}
 .illuTitle { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
 .illuText { font-size: .85rem; color: var(--text); line-height: 1.6; margin-bottom: 24px; }
 .features { display: flex; flex-direction: column; gap: 10px; text-align: left; }

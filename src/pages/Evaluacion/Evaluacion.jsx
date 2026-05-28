@@ -19,6 +19,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { useAuth }  from '../../context/AuthContext'
 import { evaluacionService, candidatosService } from '../../services'
 import { PageHeader, Table, Badge, Card, Spinner } from '../../components/ui'
+import evaluacion from '../../assets/evaluacion-de-desempeno.png'
 
 // ── Escala de niveles ─────────────────────────────────────────
 const NIVELES = [
@@ -601,7 +602,7 @@ export default function Evaluacion() {
       {/* KPIs */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(148px,1fr))', gap:12, marginBottom:20 }}>
         {[
-          { icon:'📋', label:'Evaluaciones activas', value: evals.data?.filter(e=>e.ind_activa).length },
+          { icon: evaluacion, label:'Evaluaciones activas', value: evals.data?.filter(e=>e.ind_activa).length },
           { icon:'🏃', label:'Intentos totales',     value: intentos.data?.length },
           { icon:'✅', label:'Completados',          value: completados.length },
           { icon:'📈', label:'θ Promedio',           value: avgTheta },

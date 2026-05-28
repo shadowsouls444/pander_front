@@ -9,6 +9,12 @@ import { useNavigate, Link } from 'react-router-dom'
 import api from '../../api/axios'
 import styles from './Login.module.css'
 import logo from '../../assets/logo.png'
+import { GiPadlock, GiDialPadlock } from "react-icons/gi";
+import { IoIosBarcode, IoIosCheckmarkCircle } from "react-icons/io";
+import { FaExclamationCircle } from "react-icons/fa";
+import { FaCircleXmark } from "react-icons/fa6";
+import { VscKey } from "react-icons/vsc";
+import { MdOutlineAttachEmail } from "react-icons/md";
 
 export default function ForgotPassword() {
   const navigate = useNavigate()
@@ -74,7 +80,7 @@ export default function ForgotPassword() {
         <div className={styles.card} style={{ maxWidth: 500, margin: '0 auto' }}>
           <div className={styles.cardLeft} style={{ flex: 'none', width: '100%', borderRadius: 20 }}>
             <h2 className={styles.cardTitle}>
-              {step === 1 ? '🔐 Restablecer contraseña' : '✉️ Verificar código'}
+              {step === 1 ? (<><GiDialPadlock /> {' '}Restablecer contraseña</>) : (<><IoIosBarcode /> {' '}Verificar código</>)}
             </h2>
             <p className={styles.cardSubtitle}>
               {step === 1
@@ -103,7 +109,7 @@ export default function ForgotPassword() {
                 color:       msg.type==='ok' ? '#15803d' : 'var(--danger)',
                 border:`1px solid ${msg.type==='ok' ? 'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'}`,
               }}>
-                {msg.type==='ok' ? '✅' : '⚠️'} {msg.text}
+                {msg.type==='ok' ? (<><IoIosCheckmarkCircle /></>) : (<><FaExclamationCircle /></>)} {msg.text}
               </div>
             )}
 
@@ -113,7 +119,7 @@ export default function ForgotPassword() {
                 <div className={styles.field}>
                   <label className={styles.label} htmlFor="email">Correo electrónico</label>
                   <div className={styles.inputWrap}>
-                    <span className={styles.inputIcon}>📧</span>
+                    <span className={styles.inputIcon}><MdOutlineAttachEmail /></span>
                     <input
                       id="email" type="email" className={styles.input}
                       placeholder="tu@correo.com"
@@ -134,7 +140,7 @@ export default function ForgotPassword() {
                 <div className={styles.field}>
                   <label className={styles.label} htmlFor="otp">Código OTP (6 dígitos)</label>
                   <div className={styles.inputWrap}>
-                    <span className={styles.inputIcon}>🔑</span>
+                    <span className={styles.inputIcon}><VscKey /></span>
                     <input
                       id="otp" type="text" inputMode="numeric" maxLength={6}
                       className={styles.input} placeholder="000000"
@@ -146,7 +152,7 @@ export default function ForgotPassword() {
                 <div className={styles.field}>
                   <label className={styles.label} htmlFor="pwd">Nueva contraseña</label>
                   <div className={styles.inputWrap}>
-                    <span className={styles.inputIcon}>🔒</span>
+                    <span className={styles.inputIcon}><GiPadlock /></span>
                     <input
                       id="pwd" type="password" className={styles.input}
                       placeholder="Mínimo 8 caracteres"
@@ -157,7 +163,7 @@ export default function ForgotPassword() {
                 <div className={styles.field}>
                   <label className={styles.label} htmlFor="pwdRep">Repetir contraseña</label>
                   <div className={styles.inputWrap}>
-                    <span className={styles.inputIcon}>🔒</span>
+                    <span className={styles.inputIcon}><GiPadlock /></span>
                     <input
                       id="pwdRep" type="password" className={styles.input}
                       placeholder="Repite la contraseña"
