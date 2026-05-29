@@ -119,9 +119,56 @@
 /* Footer */
 .footer { text-align: center; color: rgba(255,255,255,.5); font-size: .78rem; margin-top: 20px; }
 
+
 /* Responsive */
 @media (max-width: 640px) {
   .card { flex-direction: column; }
   .cardRight { display: none; }
   .cardLeft { padding: 36px 28px; }
+}
+
+/* Estilo del icono ocultar contraseña */
+.eyeBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+  color: #6b7280;
+
+  cursor: pointer;
+
+  transition:
+    background-color .2s ease,
+    color .2s ease,
+    transform .15s ease;
+}
+
+.eyeBtn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+}
+
+.eyeBtn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.eyeBtn:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 2px;
+}
+
+.eyeBtn svg {
+  font-size: 1.2rem;
 }
